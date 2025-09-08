@@ -10,7 +10,7 @@ const productos = [
 function buscarProducto(nombre) {
   return (
     productos.find(
-      (prod) => prod.nombre.toLocaleLowerCase() === nombre.toLowerCase()
+      (prod) => prod.nombre.toLowerCase() === nombre.toLowerCase()
     ) || null
   );
 }
@@ -28,11 +28,13 @@ function simuladorCompras() {
   let continuar = true;
 
   alert(
-    "Bienvenido a Reyba 'Tienda de carnes'  🛒\nEscribí 'salir' cuando quieras finalizar."
+    "Bienvenido a Reyba 'Tienda de carnes' 🥩🛒\nEscribí 'menu' para ver la lista de cortes o 'salir' para terminar."
   );
 
   while (continuar) {
-    let entrada = prompt("Ingresá el corte de carne que buscas o 'salir':");
+    let entrada = prompt(
+      "Elegí qué corte de carne querés, o escribí 'menu' o 'salir':"
+    );
 
     if (!entrada) {
       alert("Debés escribir algo válido.");
@@ -42,6 +44,14 @@ function simuladorCompras() {
     if (entrada.toLowerCase() === "salir") {
       continuar = false;
       break;
+    }
+    if (entrada.toLowerCase() === "menu") {
+      let lista = "Menú de cortes disponibles:\n\n";
+      for (let prod of productos) {
+        lista += `- ${prod.nombre}: $${prod.precio} (x Kg)\n`;
+      }
+      alert(lista);
+      continue;
     }
 
     const productoEncontrado = buscarProducto(entrada);
@@ -53,19 +63,18 @@ function simuladorCompras() {
         )
       );
 
-      if (isNaN(gramos) || gramos <= 0) {
-        alert("Cantidad inválida. Intentalo de nuevo.");
+      if (isNaN(gramos) || gramos <= 249) {
+        alert(
+          "Cantidad inválida, venta minima por corte 250 gr(1/4 Kg), vuelve a intentarlo."
+        );
         continue;
       }
 
-      // Calculamos el precio proporcional
       const precioFinal = (productoEncontrado.precio * gramos) / 1000;
 
       carrito.push(precioFinal);
       alert(
-        `Agregaste ${gramos + "gr. de "}${
-          productoEncontrado.nombre
-        } ($${precioFinal}) al carrito.`
+        `Agregaste ${gramos} gr. de ${productoEncontrado.nombre} ($${precioFinal}) al carrito.`
       );
     } else {
       alert("Ese producto no está disponible.");
