@@ -1,0 +1,102 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #000;
+  color: white;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+#logo {
+  width: 400px;
+  height: auto;
+}
+
+#productos-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Estilo general para las cards */
+.card {
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 15px;
+  width: 200px;
+  text-align: center;
+  background-color: #222;
+  color: white;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+/* Input de gramos */
+.card input[type="number"] {
+  width: 90%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #666;
+  border-radius: 4px;
+  text-align: center;
+  background-color: #111;
+  color: white;
+}
+
+.card input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Botón agregar al carrito */
+.card button {
+  background-color: #b22222;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.card button:hover {
+  background-color: #8b1a1a;
+}
+
+button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+#acciones-carrito {
+  margin: 10px 0;
+  display: flex;
+  gap: 10px;
+}
+
+#acciones-carrito button {
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#acciones-carrito button:hover {
+  background-color: #666;
+}
+.error {
+  font-size: 0.9em;
+  margin: 5px 0;
+  min-height: 18px;
+}

@@ -1,93 +1,123 @@
+// Array de productos
 const productos = [
-  { nombre: "Paleta", precio: 9990 },
-  { nombre: "Picada Especial", precio: 7990 },
-  { nombre: "Bife Ancho", precio: 10790 },
-  { nombre: "Tapa Asado", precio: 10390 },
-  { nombre: "Pechito de Cerdo", precio: 7290 },
-  { nombre: "Bife de Chorizo", precio: 14990 },
+  { id: 1, nombre: "Paleta", precio: 9990 },
+  { id: 2, nombre: "Picada Especial", precio: 7990 },
+  { id: 3, nombre: "Bife Ancho", precio: 10790 },
+  { id: 4, nombre: "Tapa Asado", precio: 10390 },
+  { id: 5, nombre: "Pechito de Cerdo", precio: 7290 },
+  { id: 6, nombre: "Bife de Chorizo", precio: 14990 },
 ];
 
-function buscarProducto(nombre) {
-  return (
-    productos.find(
-      (prod) => prod.nombre.toLowerCase() === nombre.toLowerCase()
-    ) || null
-  );
+// Recuperar carrito del storage o inicializar vacio
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+function imprimirProductosEnHTML(productos) {
+  const contenedor = document.getElementById("productos-container");
+
+  for (const producto of productos) {
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    card.innerHTML = `
+  <h3>${producto.nombre}</h3>
+  <p>Precio por Kg: $${producto.precio}</p>
+  <input type="number" 
+         min="100" 
+         step="100" 
+         id="gramos-${producto.id}" 
+         placeholder="Ingrese los gramos">
+  <p id="error-${producto.id}" class="error"></p>
+  <button id="btn-${producto.id}">Agregar al carrito</button>
+`;
+
+    contenedor.appendChild(card);
+
+    // Agregar evento al botón
+    const boton = document.getElementById(`btn-${producto.id}`);
+    boton.addEventListener("click", () => {
+      const gramos = parseInt(
+        document.getElementById(`gramos-${producto.id}`).value
+      );
+      agregarAlCarrito(producto, gramos);
+    });
+  }
 }
 
-function calcularTotal(listaPrecios) {
-  let total = 0;
-  for (let precio of listaPrecios) {
-    total += precio;
-  }
-  return total;
-}
+// Agregar producto al carrito
+function agregarAlCarrito(producto, gramos) {
+  const errorElemento = document.getElementById(`error-${producto.id}`);
+  const inputGramos = document.getElementById(`gramos-${producto.id}`);
+  errorElemento.textContent = ""; // limpiar error previo
 
-function simuladorCompras() {
-  const carrito = [];
-  let continuar = true;
-
-  alert(
-    "Bienvenido a Reyba 'Tienda de carnes' 🥩🛒\nEscribí 'menu' para ver la lista de cortes o 'salir' para terminar."
-  );
-
-  while (continuar) {
-    let entrada = prompt(
-      "Elegí qué corte de carne querés, o escribí 'menu' o 'salir':"
-    );
-
-    if (!entrada) {
-      alert("Debés escribir algo válido.");
-      continue;
-    }
-
-    if (entrada.toLowerCase() === "salir") {
-      continuar = false;
-      break;
-    }
-    if (entrada.toLowerCase() === "menu") {
-      let lista = "Menú de cortes disponibles:\n\n";
-      for (let prod of productos) {
-        lista += `- ${prod.nombre}: $${prod.precio} (x Kg)\n`;
-      }
-      alert(lista);
-      continue;
-    }
-
-    const productoEncontrado = buscarProducto(entrada);
-
-    if (productoEncontrado) {
-      let gramos = parseInt(
-        prompt(
-          `Ingresaste ${productoEncontrado.nombre}.\n¿Cuántos gramos querés? (ej: 500, 1000, 2000)`
-        )
-      );
-
-      if (isNaN(gramos) || gramos <= 249) {
-        alert(
-          "Cantidad inválida, venta minima por corte 250 gr(1/4 Kg), vuelve a intentarlo."
-        );
-        continue;
-      }
-
-      const precioFinal = (productoEncontrado.precio * gramos) / 1000;
-
-      carrito.push(precioFinal);
-      alert(
-        `Agregaste ${gramos} gr. de ${productoEncontrado.nombre} ($${precioFinal}) al carrito.`
-      );
-    } else {
-      alert("Ese producto no está disponible.");
-    }
+  if (isNaN(gramos) || gramos < 100) {
+    errorElemento.textContent = "⚠️ Cantidad minima 100 gr.";
+    return;
   }
 
-  if (carrito.length > 0) {
-    const total = calcularTotal(carrito);
-    alert(`El total de tu compra es: $${total}`);
-    console.log("Detalle de compra:", carrito, "Total:", total);
+  const precioFinal = (producto.precio * gramos) / 1000;
+
+  const existente = carrito.find((item) => item.nombre === producto.nombre);
+
+  if (existente) {
+    existente.gramos += gramos;
+    existente.subtotal += precioFinal;
   } else {
-    alert("No compraste nada.");
+    carrito.push({
+      nombre: producto.nombre,
+      gramos,
+      subtotal: precioFinal,
+    });
   }
+
+  guardarCarrito();
+  imprimirCarritoEnHTML();
+  inputGramos.value = ""; // para limpiar el valor
 }
 
-simuladorCompras();
+function guardarCarrito() {
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+function imprimirCarritoEnHTML() {
+  const contenedor = document.getElementById("carrito-container");
+  const totalElemento = document.getElementById("total");
+
+  contenedor.innerHTML = "";
+  let total = 0;
+
+  for (const item of carrito) {
+    const li = document.createElement("li");
+    li.textContent = `${item.gramos} gr. de ${item.nombre} → $${item.subtotal}`;
+    contenedor.appendChild(li);
+
+    total += item.subtotal;
+  }
+
+  totalElemento.textContent = `Total: $${total}`;
+}
+
+const btnVerCarrito = document.getElementById("btnVerCarrito");
+const btnBorrarCarrito = document.getElementById("btnBorrarCarrito");
+const carritoSection = document.getElementById("carrito-section");
+
+btnVerCarrito.addEventListener("click", () => {
+  if (carritoSection.style.display === "none") {
+    carritoSection.style.display = "block";
+    btnVerCarrito.textContent = "Ocultar carrito";
+  } else {
+    carritoSection.style.display = "none";
+    btnVerCarrito.textContent = "Ver carrito";
+  }
+});
+
+btnBorrarCarrito.addEventListener("click", () => {
+  carrito = [];
+  guardarCarrito();
+  imprimirCarritoEnHTML();
+});
+
+// Inicializar
+imprimirProductosEnHTML(productos);
+if (carrito.length > 0) {
+  imprimirCarritoEnHTML();
+}

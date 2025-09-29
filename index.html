@@ -4,9 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="main.js" defer></script>
+    <link rel="stylesheet" href="style.css" />
     <title>Reyba Tienda de Carnes</title>
   </head>
   <body>
-    <h1>Simulador de Compras en Reyba: Tienda de Carnes</h1>
+    <header>
+      <img src="img/logo.jpg" alt="Logo Reyba" id="logo" />
+    </header>
+    <h1>Reyba - Tienda de Carnes -</h1>
+    <!-- Contenedor dinamico para los productos -->
+    <section id="productos-container"></section>
+
+    <!-- tengo q armar un div para manejar por css todo el contenido carrito -->
+    <h2>🛒 Carrito</h2>
+    <div id="acciones-carrito">
+      <button id="btnVerCarrito">Ver carrito</button>
+      <button id="btnBorrarCarrito">Borrar carrito</button>
+    </div>
+
+    <div id="carrito-section" style="display: none">
+      <ul id="carrito-container"></ul>
+      <p id="total"></p>
+    </div>
   </body>
 </html>
