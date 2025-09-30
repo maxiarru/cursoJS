@@ -10,21 +10,26 @@
   <body>
     <header>
       <img src="img/logo.jpg" alt="Logo Reyba" id="logo" />
+      <nav id="menu">
+        <ul>
+          <li><a href="#productos-container">Productos</a></li>
+          <li><a href="#carrito-section">Carrito</a></li>
+        </ul>
+      </nav>
     </header>
     <h1>Reyba - Tienda de Carnes -</h1>
-    <!-- Contenedor dinamico para los productos -->
     <section id="productos-container"></section>
 
-    <!-- tengo q armar un div para manejar por css todo el contenido carrito -->
-    <h2>🛒 Carrito</h2>
-    <div id="acciones-carrito">
-      <button id="btnVerCarrito">Ver carrito</button>
-      <button id="btnBorrarCarrito">Borrar carrito</button>
-    </div>
-
-    <div id="carrito-section" style="display: none">
-      <ul id="carrito-container"></ul>
-      <p id="total"></p>
-    </div>
+    <section id="carrito-section">
+      <h2>🛒 Carrito</h2>
+      <div id="acciones-carrito">
+        <button id="btnVerCarrito">Ver carrito</button>
+        <button id="btnBorrarCarrito">Borrar carrito</button>
+      </div>
+      <div id="carrito-content" style="display: none">
+        <ul id="carrito-container"></ul>
+        <p id="total"></p>
+      </div>
+    </section>
   </body>
 </html>

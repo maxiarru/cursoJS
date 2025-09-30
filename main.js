@@ -43,7 +43,6 @@ function imprimirProductosEnHTML(productos) {
   }
 }
 
-// Agregar producto al carrito
 function agregarAlCarrito(producto, gramos) {
   const errorElemento = document.getElementById(`error-${producto.id}`);
   const inputGramos = document.getElementById(`gramos-${producto.id}`);
@@ -98,14 +97,14 @@ function imprimirCarritoEnHTML() {
 
 const btnVerCarrito = document.getElementById("btnVerCarrito");
 const btnBorrarCarrito = document.getElementById("btnBorrarCarrito");
-const carritoSection = document.getElementById("carrito-section");
+const carritoContent = document.getElementById("carrito-content");
 
 btnVerCarrito.addEventListener("click", () => {
-  if (carritoSection.style.display === "none") {
-    carritoSection.style.display = "block";
+  if (carritoContent.style.display === "none") {
+    carritoContent.style.display = "block";
     btnVerCarrito.textContent = "Ocultar carrito";
   } else {
-    carritoSection.style.display = "none";
+    carritoContent.style.display = "none";
     btnVerCarrito.textContent = "Ver carrito";
   }
 });
