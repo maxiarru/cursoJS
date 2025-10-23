@@ -145,3 +145,15 @@ button {
   margin: 5px 0;
   min-height: 18px;
 }
+#btnComprar {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#btnComprar:hover {
+  background-color: #b22222;
+  scale: 1.2;
+}

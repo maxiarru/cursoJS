@@ -1,14 +1,3 @@
-// Array de productos
-const productos = [
-  { id: 1, nombre: "Paleta", precio: 9990 },
-  { id: 2, nombre: "Picada Especial", precio: 7990 },
-  { id: 3, nombre: "Bife Ancho", precio: 10790 },
-  { id: 4, nombre: "Tapa Asado", precio: 10390 },
-  { id: 5, nombre: "Pechito de Cerdo", precio: 7290 },
-  { id: 6, nombre: "Bife de Chorizo", precio: 14990 },
-];
-
-// Recuperar carrito del storage o inicializar vacio
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 function imprimirProductosEnHTML(productos) {
@@ -44,12 +33,17 @@ function imprimirProductosEnHTML(productos) {
 }
 
 function agregarAlCarrito(producto, gramos) {
-  const errorElemento = document.getElementById(`error-${producto.id}`);
   const inputGramos = document.getElementById(`gramos-${producto.id}`);
-  errorElemento.textContent = ""; // limpiar error previo
 
   if (isNaN(gramos) || gramos < 100) {
-    errorElemento.textContent = "⚠️ Cantidad minima 100 gr.";
+    mostrarToast("⚠️ Cantidad minima 100 gr.", "error");
+    return;
+  }
+  if (gramos % 250 != 0) {
+    mostrarToast(
+      "⚠️ Se vende de a cuartos, ejemplo: 250 gr. 500 gr. 750 gr. 1000 gr.",
+      "error"
+    );
     return;
   }
 
@@ -69,7 +63,12 @@ function agregarAlCarrito(producto, gramos) {
   }
 
   guardarCarrito();
+  mostrarToast(
+    `✅ Agregaste ${gramos} gr. de ${producto.nombre} al carrito.`,
+    "success"
+  );
   imprimirCarritoEnHTML();
+  actualizarContadorCarrito();
   inputGramos.value = ""; // para limpiar el valor
 }
 
@@ -98,6 +97,7 @@ function imprimirCarritoEnHTML() {
 const btnVerCarrito = document.getElementById("btnVerCarrito");
 const btnBorrarCarrito = document.getElementById("btnBorrarCarrito");
 const carritoContent = document.getElementById("carrito-content");
+const btnComprar = document.getElementById("btnComprar");
 
 btnVerCarrito.addEventListener("click", () => {
   if (carritoContent.style.display === "none") {
@@ -113,10 +113,99 @@ btnBorrarCarrito.addEventListener("click", () => {
   carrito = [];
   guardarCarrito();
   imprimirCarritoEnHTML();
+  actualizarContadorCarrito();
+  mostrarToast("🛒 Carrito vacío.", "warning");
+});
+
+function mostrarToast(mensaje, tipo = "info") {
+  let background = "linear-gradient(to right, #333, #777)"; // por defecto gris de momento no se usa
+
+  if (tipo === "error")
+    background = "linear-gradient(to right, #b22222, #ff6347)";
+  if (tipo === "success")
+    background = "linear-gradient(to right, #000000ff, #ed1d1dff)";
+  if (tipo === "warning")
+    background = "linear-gradient(to right, #b22222, #000000ff)";
+
+  Toastify({
+    text: mensaje,
+    duration: 3000, // 3 segundos
+    gravity: "top",
+    position: "right",
+    close: true, // muestra una X para cerrar
+    style: {
+      background,
+      color: "white",
+      fontWeight: "bold",
+    },
+  }).showToast();
+}
+
+function actualizarContadorCarrito() {
+  const contador = document.getElementById("contador-carrito");
+  contador.textContent = obtenerTotalItems();
+}
+
+function obtenerTotalItems() {
+  return carrito.reduce((acc, item) => acc + 1, 0);
+}
+
+btnComprar.addEventListener("click", () => {
+  if (carrito.length === 0) {
+    Swal.fire({
+      title: "Carrito vacío",
+      text: "Agregá productos antes de comprar.",
+      icon: "warning",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+    return;
+  }
+
+  const total = carrito.reduce((acc, item) => acc + item.subtotal, 0);
+
+  Swal.fire({
+    title: "Confirmar compra",
+    text: `El total de tu compra es $${total.toFixed(2)}. ¿Deseás finalizar?`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Sí, comprar",
+    cancelButtonText: "Cancelar",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Vaciar carrito y storage
+      carrito = [];
+      guardarCarrito();
+      imprimirCarritoEnHTML();
+      actualizarContadorCarrito();
+
+      Swal.fire({
+        title: "¡Gracias por tu compra! 🥩",
+        text: "Tu pedido fue registrado con éxito.",
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    }
+  });
 });
 
 // Inicializar
-imprimirProductosEnHTML(productos);
+
+fetch("productos.json")
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("No se pudo cargar la lista de productos");
+    }
+    return response.json();
+  })
+  .then((data) => {
+    imprimirProductosEnHTML(data);
+  })
+  .catch((error) => {
+    console.error("Error al cargar productos:", error);
+  });
 if (carrito.length > 0) {
   imprimirCarritoEnHTML();
+  actualizarContadorCarrito();
 }

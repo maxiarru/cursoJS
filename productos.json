@@ -1,0 +1,8 @@
+[
+  { "id": 1, "nombre": "Paleta", "precio": 9990 },
+  { "id": 2, "nombre": "Picada Especial", "precio": 7990 },
+  { "id": 3, "nombre": "Bife Ancho", "precio": 10790 },
+  { "id": 4, "nombre": "Tapa Asado", "precio": 10390 },
+  { "id": 5, "nombre": "Pechito de Cerdo", "precio": 7290 },
+  { "id": 6, "nombre": "Bife de Chorizo", "precio": 14990 }
+]
