@@ -83,15 +83,29 @@ function imprimirCarritoEnHTML() {
   contenedor.innerHTML = "";
   let total = 0;
 
-  for (const item of carrito) {
+  carrito.forEach((item, index) => {
     const li = document.createElement("li");
-    li.textContent = `${item.gramos} gr. de ${item.nombre} → $${item.subtotal}`;
+    li.classList.add("item-carrito");
+    li.innerHTML = `
+      ${item.gramos} gr. de ${item.nombre} → $${item.subtotal.toFixed(2)}
+      <button class="btn-quitar"  data-index="${index}" title="Eliminar este producto">
+      ❌ </button>
+    `;
     contenedor.appendChild(li);
 
     total += item.subtotal;
-  }
+  });
 
-  totalElemento.textContent = `Total: $${total}`;
+  totalElemento.textContent = `Total: $${total.toFixed(2)}`;
+
+  // Evento para cada botón Quitar
+  const botonesQuitar = document.querySelectorAll(".btn-quitar");
+  botonesQuitar.forEach((btn) => {
+    btn.addEventListener("click", function (evento) {
+      const index = evento.target.getAttribute("data-index");
+      borrarItemDelCarrito(index);
+    });
+  });
 }
 
 const btnVerCarrito = document.getElementById("btnVerCarrito");
@@ -116,6 +130,15 @@ btnBorrarCarrito.addEventListener("click", () => {
   actualizarContadorCarrito();
   mostrarToast("🛒 Carrito vacío.", "warning");
 });
+
+function borrarItemDelCarrito(index) {
+  const item = carrito[index];
+  carrito.splice(index, 1);
+  guardarCarrito();
+  imprimirCarritoEnHTML();
+  actualizarContadorCarrito();
+  mostrarToast(`Quitaste ${item.nombre} del carrito.`, "warning");
+}
 
 function mostrarToast(mensaje, tipo = "info") {
   let background = "linear-gradient(to right, #333, #777)"; // por defecto gris de momento no se usa

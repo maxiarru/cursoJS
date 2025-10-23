@@ -157,3 +157,52 @@ button {
   background-color: #b22222;
   scale: 1.2;
 }
+
+.btn-quitar {
+  background-color: transparent;
+  color: ff0000;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.btn-quitar:hover {
+  transform: scale(1.2);
+  color: #ff5555;
+}
+
+.carrito-card {
+  background-color: #222; /* fondo oscuro tipo las cards de productos */
+  border: 1px solid #444; /* mismo borde */
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px auto;
+  width: 80%;
+  max-width: 600px;
+  color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); /* un poco de sombra */
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.carrito-card:hover {
+  transform: scale(1.02); /* leve efecto al pasar el mouse */
+}
+
+#carrito-container {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+#carrito-container li {
+  margin: 8px 0;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+}
+#total {
+  margin: 16px 0;
+  padding: 5px;
+  font-size: 30px;
+}
